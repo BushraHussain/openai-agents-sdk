@@ -8,4 +8,10 @@
 6. **Asynchronou:** Create another file named "asynchronous.py" and add the code to run the agent asynchronously using Runner.run(). 
 7. To run the asynchronous code, Use this command in the terminal - "uv run asynchronous.py" 
 
+## Steps to run the OpenAi agents (Agent SDK) using default openAi models as LLM
+
+1. Create a new file named "using_openai_model.py" and add the code.
+2. Create a .env file and add OPENAI_API_KEY=... OR in the terminal run export OPENAI_API_KEY=key_here
+3. Run the code using the command "uv run using_openai_model.py"
+
 For more details: https://openai.github.io/openai-agents-python/
