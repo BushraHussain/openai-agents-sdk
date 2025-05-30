@@ -1,6 +1,7 @@
 from agents import Agent, Runner, handoff, RunContextWrapper, enable_verbose_stdout_logging 
 from agents.extensions import handoff_filters
 from agents.extensions.handoff_prompt import RECOMMENDED_PROMPT_PREFIX
+from agents.run import RunConfig
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import datetime
@@ -8,6 +9,7 @@ import datetime
 load_dotenv()
 
 enable_verbose_stdout_logging()
+RunConfig.tracing_disabled = True
 
 #------------ Define specialized agents & their customized handoffs ---------
 
@@ -82,11 +84,11 @@ politely ask the user to rephrase or clarify their question. Then delegate to th
 
 async def main():
     tasks = [
-        "My order #12345 hasn't arrived.",
-        "I want to return a defective product.",
+        # "My order #12345 hasn't arrived.",
+        # "I want to return a defective product.",
         "What is your return policy?",
-        "I am not satisfied with your support. Escalate this!",
-        "Hey! Just checking if you’re open on Sundays?"  # Unknown intent to test fallback
+        # "I am not satisfied with your support. Escalate this!",
+        # "Hey! Just checking if you’re open on Sundays?"  # Unknown intent to test fallback
     ]
 
     for i, task in enumerate(tasks, start=1):

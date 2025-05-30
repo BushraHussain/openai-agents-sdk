@@ -1,57 +1,38 @@
-import os
+from agents import Agent, Runner, OpenAIChatCompletionsModel
+from openai import AsyncOpenAI
 from dotenv import load_dotenv
-from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel
-from agents.run import RunConfig
+import os
 
-# Load the environment variables from the .env file
 load_dotenv()
 
-# ------------------ Gemini configuration -------------------
+gemini_key = os.getenv("GEMINI_API_KEY")
+base_url ="https://generativelanguage.googleapis.com/v1beta/openai/"
 
-gemini_api_key = os.getenv("GEMINI_API_KEY")
-
-# Check if the API key is present; if not, raise an error
-if not gemini_api_key:
-    raise ValueError("GEMINI_API_KEY is not set. Please ensure it is defined in your .env file.")
-
-#Reference: https://ai.google.dev/gemini-api/docs/openai
-external_client = AsyncOpenAI(
-    api_key=gemini_api_key,
-    base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+# Make a client - if using a model other than openai models 
+client = AsyncOpenAI(
+    api_key=gemini_key,  # Pass as keyword argument
+    base_url=base_url   # Pass as keyword argument
 )
-
-model = OpenAIChatCompletionsModel(
-    model="gemini-2.0-flash",
-    openai_client=external_client
-)
-
-config = RunConfig(
-    model=model,
-    model_provider=external_client,
-    tracing_disabled=True
-)
-
-# ------------------ Agent  -------------------
 
 async def main():
 
-    # define the agent 
-    agent:Agent = Agent(
-        name="Math mentor",
-        instructions="You are a helpful science teacher",
-        model=model
+    gemini_agent = Agent(
+        name="Gemini Agent",
+        instructions="You are a helpful assistant that can answer questions and provide information about france country.",
+        model=OpenAIChatCompletionsModel(
+            openai_client=client,
+            model="gemini-2.0-flash",
+        )
     )
 
-    # Run the agent asynchronously using run_sync
     result = await Runner.run(
-        agent, 
-        "hi who are you?",
-        run_config=config
+        gemini_agent,
+        "What is the capital of France?",
     )
 
-    print("\nCALLING AGENT\n")
-    print("Agent response:", result.final_output)
+    print(result.final_output)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     import asyncio
     asyncio.run(main())
